@@ -32,12 +32,12 @@ def load_embedding_model(model_id: str, instruct: bool = False, device: int = 0)
         client = sentence_transformers.SentenceTransformer(model_id)
     else:
         from InstructorEmbedding import INSTRUCTOR
-
+        
         client = INSTRUCTOR(model_id)
 
     if importlib.util.find_spec("torch") is not None:
         import torch
-
+        '''
         cuda_device_count = torch.cuda.device_count()
         if device < -1 or (device >= cuda_device_count):
             raise ValueError(
@@ -52,7 +52,8 @@ def load_embedding_model(model_id: str, instruct: bool = False, device: int = 0)
                 "can be a positive integer associated with CUDA device id.",
                 cuda_device_count,
             )
-
+        '''
+        device = torch.device('hpu')
         client = client.to(device)
     return client
 

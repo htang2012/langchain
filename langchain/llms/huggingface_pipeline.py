@@ -105,7 +105,7 @@ class HuggingFacePipeline(LLM):
 
         if importlib.util.find_spec("torch") is not None:
             import torch
-
+            '''
             cuda_device_count = torch.cuda.device_count()
             if device < -1 or (device >= cuda_device_count):
                 raise ValueError(
@@ -120,6 +120,7 @@ class HuggingFacePipeline(LLM):
                     "can be a positive integer associated with CUDA device id.",
                     cuda_device_count,
                 )
+            '''
         if "trust_remote_code" in _model_kwargs:
             _model_kwargs = {
                 k: v for k, v in _model_kwargs.items() if k != "trust_remote_code"

@@ -80,7 +80,7 @@ def _load_transformer(
 
     if importlib.util.find_spec("torch") is not None:
         import torch
-
+        ''' 
         cuda_device_count = torch.cuda.device_count()
         if device < -1 or (device >= cuda_device_count):
             raise ValueError(
@@ -95,7 +95,8 @@ def _load_transformer(
                 "can be a positive integer associated with CUDA device id.",
                 cuda_device_count,
             )
-
+        '''
+    
     pipeline = hf_pipeline(
         task=task,
         model=model,
@@ -113,7 +114,7 @@ def _load_transformer(
 
 class SelfHostedHuggingFaceLLM(SelfHostedPipeline):
     """Wrapper around HuggingFace Pipeline API to run on self-hosted remote hardware.
-
+    
     Supported hardware includes auto-launched instances on AWS, GCP, Azure,
     and Lambda, as well as servers specified
     by IP address and SSH credentials (such as on-prem, or another cloud

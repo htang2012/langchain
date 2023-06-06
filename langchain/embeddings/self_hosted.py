@@ -32,7 +32,7 @@ class SelfHostedEmbeddings(SelfHostedPipeline, Embeddings):
             from langchain.embeddings import SelfHostedEmbeddings
             from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
             import runhouse as rh
-
+            
             gpu = rh.cluster(name="rh-a10x", instance_type="A100:1")
             def get_pipeline():
                 model_id = "facebook/bart-large"

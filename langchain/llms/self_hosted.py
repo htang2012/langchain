@@ -41,7 +41,7 @@ def _send_pipeline_to_device(pipeline: Any, device: int) -> Any:
 
     if importlib.util.find_spec("torch") is not None:
         import torch
-
+        '''
         cuda_device_count = torch.cuda.device_count()
         if device < -1 or (device >= cuda_device_count):
             raise ValueError(
@@ -56,8 +56,9 @@ def _send_pipeline_to_device(pipeline: Any, device: int) -> Any:
                 "can be a positive integer associated with CUDA device id.",
                 cuda_device_count,
             )
-
-        pipeline.device = torch.device(device)
+        '''
+        device = torch.device('hpu')
+        pipeline.device = device
         pipeline.model = pipeline.model.to(pipeline.device)
     return pipeline
 
