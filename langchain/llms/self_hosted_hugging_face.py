@@ -8,6 +8,7 @@ from pydantic import Extra
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.self_hosted import SelfHostedPipeline
 from langchain.llms.utils import enforce_stop_tokens
+import habana_frameworks.torch.core as htcore
 
 DEFAULT_MODEL_ID = "gpt2"
 DEFAULT_TASK = "text-generation"
@@ -96,7 +97,7 @@ def _load_transformer(
                 cuda_device_count,
             )
         '''
-    
+    device = torch.device('hpu')
     pipeline = hf_pipeline(
         task=task,
         model=model,
