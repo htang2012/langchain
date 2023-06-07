@@ -4,6 +4,7 @@ import logging
 from typing import Any, Callable, List, Optional
 
 from langchain.embeddings.self_hosted import SelfHostedEmbeddings
+import habana_frameworks.toch.core as htcore
 
 DEFAULT_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 DEFAULT_INSTRUCT_MODEL = "hkunlp/instructor-large"
