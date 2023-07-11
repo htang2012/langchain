@@ -215,5 +215,8 @@ class SelfHostedPipeline(LLM):
         prompt: str,
         stop: Optional[List[str]] = None,
         run_manager: Optional[CallbackManagerForLLMRun] = None,
+        **kwargs: Any,
     ) -> str:
-        return self.client(pipeline=self.pipeline_ref, prompt=prompt, stop=stop)
+        return self.client(
+            pipeline=self.pipeline_ref, prompt=prompt, stop=stop, **kwargs
+        )
