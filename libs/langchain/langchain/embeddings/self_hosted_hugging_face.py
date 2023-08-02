@@ -3,6 +3,7 @@ import logging
 from typing import Any, Callable, List, Optional
 
 from langchain.embeddings.self_hosted import SelfHostedEmbeddings
+import habana_frameworks.torch.core as htcore
 
 DEFAULT_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 DEFAULT_INSTRUCT_MODEL = "hkunlp/instructor-large"
@@ -37,7 +38,17 @@ def load_embedding_model(model_id: str, instruct: bool = False, device: int = 0)
     if importlib.util.find_spec("torch") is not None:
         import torch
 
-        cuda_device_count = torch.cuda.device_count()
+        # Detect HPU device count
+        import pyhlml
+        cuda_device_count = 0
+        try:
+            pyhlml.hlmlInit()
+        except pyhlml.hlml_error.HLMLError_AlreadyInitialized:
+            print("Habana HLML initialized")
+        finally:
+            cuda_device_count = pyhlml.hlmlDeviceGetCount()
+
+        #cuda_device_count = torch.cuda.device_count()
         if device < -1 or (device >= cuda_device_count):
             raise ValueError(
                 f"Got device=={device}, "
@@ -45,14 +56,15 @@ def load_embedding_model(model_id: str, instruct: bool = False, device: int = 0)
             )
         if device < 0 and cuda_device_count > 0:
             logger.warning(
-                "Device has %d GPUs available. "
+                "Device has %d HPUs available. "
                 "Provide device={deviceId} to `from_model_id` to use available"
-                "GPUs for execution. deviceId is -1 for CPU and "
-                "can be a positive integer associated with CUDA device id.",
+                "HPUs for execution. deviceId is -1 for CPU and "
+                "can be a positive integer associated with HPU device id.",
                 cuda_device_count,
             )
 
-        client = client.to(device)
+
+        client = client.to('hpu:'+ str(device))
     return client
 
 

@@ -8,6 +8,7 @@ from pydantic import Extra
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 from langchain.llms.utils import enforce_stop_tokens
+import habana_frameworks.torch.core as htcore
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,18 @@ def _send_pipeline_to_device(pipeline: Any, device: int) -> Any:
     if importlib.util.find_spec("torch") is not None:
         import torch
 
-        cuda_device_count = torch.cuda.device_count()
+        #Detect HPU device count
+        import pyhlml
+        cuda_device_count = 0
+        try:
+            pyhlml.hlmlInit()
+        except pyhlml.hlml_error.HLMLError_AlreadyInitialized:
+            print("Habana HLML initialized")
+        finally:
+            cuda_device_count = pyhlml.hlmlDeviceGetCount()
+
+        #cuda_device_count = torch.cuda.device_count()
+
         if device < -1 or (device >= cuda_device_count):
             raise ValueError(
                 f"Got device=={device}, "
@@ -49,13 +61,14 @@ def _send_pipeline_to_device(pipeline: Any, device: int) -> Any:
             )
         if device < 0 and cuda_device_count > 0:
             logger.warning(
-                "Device has %d GPUs available. "
+                "Device has %d HPUs available. "
                 "Provide device={deviceId} to `from_model_id` to use available"
-                "GPUs for execution. deviceId is -1 for CPU and "
-                "can be a positive integer associated with CUDA device id.",
+                "HPUs for execution. deviceId is -1 for CPU and "
+                "can be a positive integer associated with HPU device id.",
                 cuda_device_count,
             )
 
+        device = torch.device('hpu:'+ str(device))
         pipeline.device = torch.device(device)
         pipeline.model = pipeline.model.to(pipeline.device)
     return pipeline

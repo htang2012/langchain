@@ -105,7 +105,17 @@ class HuggingFacePipeline(LLM):
         if importlib.util.find_spec("torch") is not None:
             import torch
 
-            cuda_device_count = torch.cuda.device_count()
+            # Detect HPU device count
+            import pyhlml
+            cuda_device_count = 0
+            try:
+                pyhlml.hlmlInit()
+            except pyhlml.hlml_error.HLMLError_AlreadyInitialized:
+                print("Habana HLML initialized")
+            finally:
+                cuda_device_count = pyhlml.hlmlDeviceGetCount()
+
+            #cuda_device_count = torch.cuda.device_count()
             if device < -1 or (device >= cuda_device_count):
                 raise ValueError(
                     f"Got device=={device}, "
@@ -113,12 +123,14 @@ class HuggingFacePipeline(LLM):
                 )
             if device < 0 and cuda_device_count > 0:
                 logger.warning(
-                    "Device has %d GPUs available. "
+                    "Device has %d HPUs available. "
                     "Provide device={deviceId} to `from_model_id` to use available"
-                    "GPUs for execution. deviceId is -1 (default) for CPU and "
-                    "can be a positive integer associated with CUDA device id.",
+                    "HPUs for execution. deviceId is -1 (default) for CPU and "
+                    "can be a positive integer associated with HPU device id.",
                     cuda_device_count,
                 )
+
+        device = torch.device('hpu:' + str(device))
         if "trust_remote_code" in _model_kwargs:
             _model_kwargs = {
                 k: v for k, v in _model_kwargs.items() if k != "trust_remote_code"
