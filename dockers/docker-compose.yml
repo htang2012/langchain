@@ -14,18 +14,10 @@ services:
     - HCCL_OVER_OFI=0 
     cap_add:
       - SYS_PTRACE
-    # working_dir: /model_garden/PyTorch/nlp/pretraining/bert
     privileged: true
     ipc: host
-    #network_mode: host
-    #networks:
-    #    runhouse-network:
-    #       ipv4_address: 172.17.0.3
     ports:
       - '22'
-    volumes:
-        - /nfs/users1/ytang/ytang-devcontainers/runhouse/devspace:/devspace
-    #command: "strace df /"
     tty: true
     restart: unless-stopped
   
@@ -44,23 +36,9 @@ services:
       - SYS_PTRACE
     privileged: true
     ipc: host
-    #network_mode: host
-    #networks:
-    #    runhouse-network:
-    #      ipv4_address: 172.17.0.2
     ports:
       - '22'
-    volumes:
-        - /nfs/users1/ytang/ytang-devcontainers/runhouse/devspace:/devspace
-    #command: "strace df /"
     tty: true
     restart: unless-stopped
 
-networks:
-  runhouse-network:
-    driver: bridge
-    #ipam:
-      #config:
-      #  - subnet: 172.17.0.0/16
-      #    gateway: 172.17.0.1
 

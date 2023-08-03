@@ -1,7 +1,7 @@
 FROM artifactory-kfs.habana-labs.com/docker-local/1.12.0/ubuntu22.04/habanalabs/pytorch-installer-2.0.1:1.12.0-180
 RUN apt-get update && apt-get install -y openssh-server strace sudo screen rsync git
 RUN echo 'root:visl' | chpasswd
-RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+#RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise, user is kicked off after login
@@ -18,6 +18,14 @@ WORKDIR /langchain
 RUN git checkout gaudi
 WORKDIR /langchain/libs/langchain
 RUN pip install -e .
+WORKDIR /root/.ssh
+WORKDIR /langchain/dockers
+COPY id_rsa /root/.ssh
+COPY id_rsa.pub /root/.ssh
+RUN cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+RUN chmod 700 /root/.ssh
+RUN chmod 600 /root/.ssh/*
+WORKDIR /langchain/gaudi_tests
 
 #RUN  curl -sSL https://install.python-poetry.org | python3 -
 #RUN /root/.local/bin/poetry install --no-ansi --no-interaction
