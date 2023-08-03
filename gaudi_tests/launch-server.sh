@@ -1,0 +1,3 @@
+ray start --head
+runhouse login eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inl1dGFuZzIwMDFAZ21haWwuY29tIiwiYXV0aF9pZCI6IjIyMTMzMzkiLCJjcmVhdGVkIjoxNjg1MTYwMjE1LjEwNDM5OCwiZXhwaXJlcyI6MTcxNjY5NjIxNS4xMDQzOTh9.kNmc1sjJ0-WjhyBTbz_mm8_1GpPjSH5tV6_qGkQAYzY
+python -m runhouse.servers.http.http_server
