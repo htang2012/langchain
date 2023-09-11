@@ -1,4 +1,4 @@
-FROM artifactory-kfs.habana-labs.com/docker-local/1.12.0/ubuntu22.04/habanalabs/pytorch-installer-2.0.1:1.12.0-180
+FROM artifactory-kfs.habana-labs.com/docker-local/1.13.0/ubuntu22.04/habanalabs/pytorch-installer-2.0.1:1.12.0-70
 RUN apt-get update && apt-get install -y openssh-server strace sudo screen rsync git
 RUN echo 'root:visl' | chpasswd
 #RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
@@ -11,7 +11,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN pip install --upgrade pip
-RUN pip install runhouse transformers
+RUN pip install runhouse==0.0.10 transformers
 
 RUN git clone https://github.com/htang2012/langchain.git
 WORKDIR /langchain
