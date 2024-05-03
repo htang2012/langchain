@@ -4,6 +4,9 @@ services:
     build:
       dockerfile: libs/langchain/dev.Dockerfile
       context: ..
+      args:
+        HTTP_PROXY: http://proxy-us.intel.com:911
+        HTTPS_PROXY: http://proxy-us.intel.com:912
     volumes:
    # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces/langchain:cached
