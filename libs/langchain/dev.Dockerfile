@@ -1,9 +1,16 @@
 # This is a Dockerfile for the Development Container
 
 # Use the Python base image
-ARG VARIANT="3.11-bullseye"
-FROM mcr.microsoft.com/devcontainers/python:0-${VARIANT} AS langchain-dev-base
+#ARG VARIANT="3.11-bullseye"
+#FROM mcr.microsoft.com/devcontainers/python:0-${VARIANT} AS langchain-dev-base
+FROM artifactory-kfs.habana-labs.com/docker-local/1.15.0/ubuntu22.04/habanalabs/pytorch-installer-2.2.0:1.15.0-479 as langchain-dev-base
+RUN apt update
+RUN apt install -y pipx
+RUN pipx ensurepath
+RUN pipx install prospector
+#RUN pipx --global ensurepath 
 
+RUN useradd -ms /bin/bash vscode
 USER vscode
 
 # Define the version of Poetry to install (default is 1.4.2)
@@ -18,6 +25,10 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=false \
 RUN python3 -m pip install --user pipx && \
     python3 -m pipx ensurepath && \
     pipx install poetry==${POETRY_VERSION}
+
+#RUN pipx install --suffix @main git+https://github.com/python-poetry/poetry.git@main
+ENV PATH="/home/vscode/.local/bin:$PATH"  
+#RUN poetry install
 
 # Create a Python virtual environment for the project
 RUN python3 -m venv ${PYTHON_VIRTUALENV_HOME} && \
