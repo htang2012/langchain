@@ -7,9 +7,18 @@ services:
       args:
         HTTP_PROXY: http://proxy-us.intel.com:911
         HTTPS_PROXY: http://proxy-us.intel.com:912
+    runtime: habana
+    environment: 
+      - HABANA_VISIBLE_DEVICES=all
+      - OMPI_MCA_btl_vader_single_copy_mechanism=none
+
+
     volumes:
    # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces/langchain:cached
+    cap_add:
+      - SYS_NICE
+    
     networks:
       - langchain-network 
   #   environment:
@@ -27,6 +36,9 @@ services:
   #     - "27017:27017"
   #   networks:
   #     - langchain-network
+  
+  # optional
+    command: /bin/sh -c "while sleep 1000; do :; done"
 
 networks:
   langchain-network:
